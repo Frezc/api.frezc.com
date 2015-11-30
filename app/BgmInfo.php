@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RelateInfo extends Model
+class BgmInfo extends Model
 {
     protected $connection = 'anime_statistics_db';
 
-    protected $table = 'relate_info';
+    protected $table = 'bgm_info';
+
+    protected $hidden = ['format_name'];
 }

@@ -24,6 +24,7 @@ Route::get('/', function () {
 $api = app('Dingo\Api\Routing\Router');
 
 $api -> version('v1',  function($api){
-  //$api->get('users', 'App\Http\Controllers\AuthenticateController@index');
-
+  // $api->get('users', 'App\Http\Controllers\AuthenticateController@index');
+  $api->get('bgm_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showBgmInfo')
+      ->where('id','[0-9]+');
 });
