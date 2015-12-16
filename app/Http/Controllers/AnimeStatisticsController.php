@@ -60,8 +60,6 @@ class AnimeStatisticsController extends Controller
       ->select($selects)->orderBy('score', 'desc')->skip($params['start'])
       ->take($params['limit'])->get();
 
-    dd($results);
-
     if ($results == null){
       return $this->response->errorNotFound();
     } else {
