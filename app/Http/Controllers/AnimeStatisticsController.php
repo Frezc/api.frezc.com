@@ -56,7 +56,7 @@ class AnimeStatisticsController extends Controller
                 'bgm_score', 'bgm_score_rank', 'bgm_pop_rank', 'bgm_votes',
                 'sati_score', 'sati_score_rank', 'sati_pop_rank', 'sati_votes'];
 
-    $results = DB::connection('anime_statistics_db')->table('Rank'.$params['time'])
+    $results = DB::connection('anime_statistics_db')->table('rank'.$params['time'])
       ->select($selects)->orderBy('score', 'desc')->skip($params['start'])
       ->take($params['limit'])->get();
 

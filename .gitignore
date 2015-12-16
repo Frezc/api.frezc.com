@@ -2,5 +2,6 @@
 .idea
 public/u.php
 .env
+composer.lock
 sh.exe.stackdump
 phpspec.yml
