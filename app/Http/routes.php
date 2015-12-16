@@ -25,6 +25,8 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api -> version('v1',  function($api){
   // $api->get('users', 'App\Http\Controllers\AuthenticateController@index');
+  $api->get('test', 'App\Http\Controllers\AnimeStatisticsController@test');
   $api->get('bgm_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showBgmInfo')
       ->where('id','[0-9]+');
+  $api->get('anime_rank', 'App\Http\Controllers\AnimeStatisticsController@getAnimeRank');
 });

@@ -70,7 +70,7 @@ return [
             'database'  => env('DB_AS_DATABASE', 'db'),
             'username'  => env('DB_AS_USERNAME', 'root'),
             'password'  => env('DB_AS_PASSWORD', ''),
-            'port'      => 4751,
+            'port'      => 3306,
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
