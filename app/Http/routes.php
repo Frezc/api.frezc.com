@@ -28,5 +28,7 @@ $api -> version('v1',  function($api){
   $api->get('test', 'App\Http\Controllers\AnimeStatisticsController@test');
   $api->get('bgm_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showBgmInfo')
       ->where('id','[0-9]+');
+  $api->get('relate_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showRelateInfo')
+      ->where('id','[0-9]+');
   $api->get('anime_rank', 'App\Http\Controllers\AnimeStatisticsController@getAnimeRank');
 });

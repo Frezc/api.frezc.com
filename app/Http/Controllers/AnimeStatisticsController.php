@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\BgmInfo;
+use App\RelateInfo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use DB;
@@ -23,6 +24,16 @@ class AnimeStatisticsController extends Controller
     } catch (ModelNotFoundException $e){
       return $this->response->errorNotFound();
     }
+  }
+
+  public function showRelateInfo($id){
+    try {
+      $relate_info = RelateInfo::findOrFail($id);
+      return response()->json($relate_info);
+    } catch (ModelNotFoundException $e) {
+      return $this->response->errorNotFound();
+    }
+
   }
 
   public function getAnimeRank(Request $request){
