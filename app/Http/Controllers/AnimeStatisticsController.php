@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\BgmInfo;
 use App\RelateInfo;
+use App\AnnInfo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use DB;
@@ -29,11 +30,13 @@ class AnimeStatisticsController extends Controller
   public function showRelateInfo($id){
     try {
       $relate_info = RelateInfo::findOrFail($id);
+      $ann_info = AnnInfo::where('url', $relate_info->ann_url)->firstOrFail();
+      $relate_info->type = $ann_info->anime_type;
+      $relate_info->eps = $ann_info->number_of_episodes;
       return response()->json($relate_info);
     } catch (ModelNotFoundException $e) {
       return $this->response->errorNotFound();
     }
-
   }
 
   public function getAnimeRank(Request $request){
