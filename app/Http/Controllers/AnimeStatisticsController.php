@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\BgmInfo;
-use App\RelateInfo;
-use App\AnnInfo;
+use App\Models\BgmInfo;
+use App\Models\RelateInfo;
+use App\Models\AnnInfo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use DB;
 
 class AnimeStatisticsController extends Controller
 {
-  public function test(){
-    return 'hello';
+  public function test(Request $request){
+    return 'ip: '.$request->ip()
+      .' path: ['.$request->method().'] '.$request->path();
   }
 
   public function showBgmInfo($id){
