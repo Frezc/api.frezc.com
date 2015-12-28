@@ -41,9 +41,9 @@ class AnimeStatisticsController extends Controller
   }
 
   public function getAnimeRank(Request $request){
-    $params = $request->only('time', 'start', 'limit', 'lang');
+    $params = $request->only('start', 'limit', 'lang');
     $v = Validator::make($params, [
-      'time' => 'date_format:Ym',
+      // 'time' => 'date_format:Y-m',
       'start' => 'integer|min:0',
       'limit' => 'integer|min:0',
       'lang' => 'in:jp,en,cn'
@@ -53,9 +53,13 @@ class AnimeStatisticsController extends Controller
       return $this->response->error($v->errors(), 400);
     }
 
-    if ($params['time'] == null){
-      $params['time'] = date('Ym', time());
-    }
+    $now = time();
+    $month = date('Y-m', $now);
+    if ($now > strtotime($month.'-2 00:00:00'))
+      $params['time'] = date('Ym', $now);
+    else
+      $params['time'] = date('Ym', strtotime('-2 day'));
+
     if ($params['start'] == null){
       $params['start'] = 0;
     }
