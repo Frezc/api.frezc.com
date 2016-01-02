@@ -20,7 +20,8 @@ Request:
 - lang: 标题显示的语言(cn, jp, en), 默认cn
 
 Response:
-[{
+{
+	[{
 		relate_id: relate表中的id，
     score: 分数，
     ann_score: ann的评分，0代表不和要求的分数，
@@ -30,7 +31,9 @@ Response:
     bgm_...: 同上，
     sati_...: 同上，
     name: 番名
-}]
+	}],
+	update_date: 更新时间
+}
 
 #####/relate_info/{id}
 [get]
