@@ -82,7 +82,7 @@ class AnimeStatisticsController extends Controller
     if ($results == null){
       return $this->response->errorNotFound();
     } else {
-      $update_date = substr($params['time'], 0, 4).'-'.substr($params['time'], 4).'-1';
+      $update_date = substr($params['time'], 0, 4).'-'.substr($params['time'], 4).'-01';
       return response()->json(['rank' => $results, 'updated_date' => $update_date]);
     }
   }
