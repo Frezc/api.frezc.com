@@ -30,7 +30,8 @@ $api -> version('v1', function($api){
       ->where('id','[0-9]+');
   $api->get('relate_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showRelateInfo')
       ->where('id','[0-9]+');
-  $api->group(['middleware' => 'api.throttle', 'limit' => 20, 'expires' => 1], function ($api) {
+  $api->group(['middleware' => 'api.throttle', 'limit' => 10, 'expires' => 1], function ($api) {
     $api->get('anime_rank', 'App\Http\Controllers\AnimeStatisticsController@getAnimeRank');
   });
+  $api->get('fetchAnimelist', 'App\Http\Controllers\CrawlController@fetchAnimelist');
 });

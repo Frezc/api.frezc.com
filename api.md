@@ -50,3 +50,7 @@ Response:
 		type: 番剧类型
 		eps: 番剧集数，一般movie类型为0
 }
+
+#####/fetchAnimelist
+[get]
+response同http://api.bgm.tv/calendar
