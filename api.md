@@ -3,6 +3,16 @@
 host: api.frezc.com
 
 ____
+
+####MODEL
+[error model]:
+{
+    error: "error msg"
+}
+
+____
+####API
+
 #####/bgm_info/{id}
 [get]
 Request:

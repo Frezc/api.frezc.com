@@ -9,7 +9,6 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\User;
 use Storage;
-use Validator;
 use Hash;
 
 class AuthenticateController extends Controller
@@ -26,22 +25,6 @@ class AuthenticateController extends Controller
       // return $users;
       // return $this->response->errorNotFound();
       return $user = JWTAuth::parseToken()->authenticate();
-  }
-
-  public function updateAvatar(Request $request){
-    $user = JWTAuth::parseToken()->authenticate();
-    if ($request->hasFile('avatar') && $request->file('avatar')->isValid()){
-        Storage::disk('ftp')->put(
-            'avatars/'.$user->id,
-            file_get_contents($request->file('avatar')->getRealPath())
-        );
-        $url = 'http://static.frezc.com/static/avatars/'.$user->id;
-        $user->avatar = $url;
-        $user->save();
-        return $url;
-    } else {
-        return $this->response->errorBadRequest();
-    }
   }
 
   public function refreshToken(Request $request){

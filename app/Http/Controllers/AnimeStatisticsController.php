@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BgmInfo;
 use App\Models\RelateInfo;
 use App\Models\AnnInfo;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Validator;
 use DB;
 
 class AnimeStatisticsController extends Controller
@@ -20,39 +18,28 @@ class AnimeStatisticsController extends Controller
   }
 
   public function showBgmInfo($id){
-    try{
       $bgm_info = BgmInfo::findOrFail($id);
       return response()->json($bgm_info);
-    } catch (ModelNotFoundException $e){
-      return $this->response->errorNotFound();
-    }
   }
 
   public function showRelateInfo($id){
-    try {
       $relate_info = RelateInfo::findOrFail($id);
       $ann_info = AnnInfo::where('url', $relate_info->ann_url)->firstOrFail();
       $relate_info->type = $ann_info->anime_type;
       $relate_info->eps = $ann_info->number_of_episodes;
       return response()->json($relate_info);
-    } catch (ModelNotFoundException $e) {
-      return $this->response->errorNotFound();
-    }
   }
 
   public function getAnimeRank(Request $request){
-    $params = $request->only('start', 'limit', 'lang');
-    $v = Validator::make($params, [
+    $this->validate($request, [
       // 'time' => 'date_format:Y-m',
       'start' => 'integer|min:0',
       'limit' => 'integer|min:0',
       'lang' => 'in:jp,en,cn'
     ]);
 
-    if ($v->fails()){
-      return $this->response->error($v->errors(), 400);
-    }
-
+    $params = $request->only('start', 'limit', 'lang');
+    
     $now = time();
     $month = date('Y-m', $now);
     if ($now > strtotime($month.'-2 00:00:00'))
@@ -80,7 +67,7 @@ class AnimeStatisticsController extends Controller
       ->take($params['limit'])->get();
 
     if ($results == null){
-      return $this->response->errorNotFound();
+      return response()->json(['error' => 'no results'], 404);
     } else {
       $update_date = substr($params['time'], 0, 4).'-'.substr($params['time'], 4).'-01';
       return response()->json(['rank' => $results, 'updated_date' => $update_date]);

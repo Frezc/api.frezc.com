@@ -21,17 +21,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-$api = app('Dingo\Api\Routing\Router');
-
-$api -> version('v1', function($api){
-  // $api->get('users', 'App\Http\Controllers\AuthenticateController@index');
-  // $api->get('test', 'App\Http\Controllers\AnimeStatisticsController@test');
-  $api->get('bgm_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showBgmInfo')
-      ->where('id','[0-9]+');
-  $api->get('relate_info/{id}', 'App\Http\Controllers\AnimeStatisticsController@showRelateInfo')
-      ->where('id','[0-9]+');
-  $api->group(['middleware' => 'api.throttle', 'limit' => 10, 'expires' => 1], function ($api) {
-    $api->get('anime_rank', 'App\Http\Controllers\AnimeStatisticsController@getAnimeRank');
-  });
-  $api->get('fetchAnimelist', 'App\Http\Controllers\CrawlController@fetchAnimelist');
+// $api->get('users', 'App\Http\Controllers\AuthenticateController@index');
+// $api->get('test', 'App\Http\Controllers\AnimeStatisticsController@test');
+Route::get('bgm_info/{id}', 'AnimeStatisticsController@showBgmInfo')
+    ->where('id','[0-9]+');
+Route::get('relate_info/{id}', 'AnimeStatisticsController@showRelateInfo')
+    ->where('id','[0-9]+');
+Route::group([], function ($api) {
+    Route::get('anime_rank', 'AnimeStatisticsController@getAnimeRank');
 });
+Route::get('fetchAnimelist', 'CrawlController@fetchAnimelist');
