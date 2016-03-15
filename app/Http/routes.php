@@ -27,7 +27,7 @@ Route::get('bgm_info/{id}', 'AnimeStatisticsController@showBgmInfo')
     ->where('id','[0-9]+');
 Route::get('relate_info/{id}', 'AnimeStatisticsController@showRelateInfo')
     ->where('id','[0-9]+');
-Route::group([], function ($api) {
+Route::group(['middleware' => 'throttle:3'], function ($api) {
     Route::get('anime_rank', 'AnimeStatisticsController@getAnimeRank');
 });
 Route::get('fetchAnimelist', 'CrawlController@fetchAnimelist');
