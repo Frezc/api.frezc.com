@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,8 +18,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
+        ValidationException::class,
     ];
 
     /**
@@ -30,7 +34,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**
@@ -42,10 +46,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
-            return response()->json(['error' => 'path '.$request->path().' not found'], 404);
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json(['code' => 404, 'error' => 'item not found. please check your input.'], 404);
+        } else if ($e instanceof NotFoundHttpException) {
+            return response()->json(['code' => 404, 'error' => 'path not found.'], 404);
+        } else if ($e instanceof ValidationException) {
+            return response()->json(['code' => 400, 'error' => $e->validator->messages()], 400);
         }
-
         return parent::render($request, $e);
     }
 }

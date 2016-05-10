@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateEmailVerificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,12 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('email_verifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nickname', 32);
+            $table->string('code', 6);
             $table->string('email')->unique();
-            $table->string('password', 60);
-            $table->string('todo_app_token')->nullable();
-            $table->timestamps();
-
-            $table->index('nickname');
-            $table->index('todo_app_token');
+            $table->tinyInteger('active')->default(1); // 0 inactive 1 actives
+            $table->timestamp('send_at');
         });
     }
 
@@ -32,6 +28,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::drop('email_verifications');
     }
 }
