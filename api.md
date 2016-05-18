@@ -7,6 +7,7 @@ ____
 ####MODEL
 [error model]:
 {
+	code: 404,
     error: "error msg"
 }
 
@@ -64,3 +65,88 @@ Response:
 #####/fetchAnimelist
 [get]
 response同http://api.bgm.tv/calendar
+
+#####/todos/{id}
+[get]
+request: {
+	token: 'required'
+}
+
+response: (todo){
+	id,
+	user_id,
+	title,
+	status,
+	type,
+	start_at,
+	urgent_at,
+	deadline,
+	priority,
+	location,
+	end_at,
+	contents: [{
+		content: text,
+		status: number
+	}]
+	created_at,
+	updated_at
+}
+
+#####/todos/{id}
+[post]
+request: {
+	token,
+	title,
+	type,
+	start_at,
+	urgent_at,
+	deadline,
+	priority,
+	location,
+	contents: [{content, status}]
+	updated_at: 用于延迟更新，如果该项早于数据库的updated_at则会返回错误
+}
+↑↑↑
+update
+
+#####/todos
+[post]
+↑↑↑
+create
+
+#####/todolist
+[get]
+request: {
+	token,
+	status: '0,1,2,3', // empty as all
+	types: 'default,work' // list of types
+	orderBy: 'updated_at', // updated_at as default, start_at, priority, end_at(while complete or abandon)
+	direction: 'asc', // asc or desc
+	offset: number, // 0 as default
+	limit: number,   // 1000 as default
+	keyword: string, // search in title and location
+}
+
+response: {
+	all: number of whole items,
+	todolist: [todo]
+}
+
+#####/todos/{id}/finish
+[post]
+request: {
+	token,
+	type: 'complete' or 'abandon'
+}
+
+response: todo
+
+#####/todos/{id}/layside
+[post]
+request: {
+	token,
+	type: 'todo' or 'layside'
+}
+
+response: todo
+

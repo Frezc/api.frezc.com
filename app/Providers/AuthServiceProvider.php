@@ -26,6 +26,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         parent::registerPolicies($gate);
 
-        //
+        $gate->define('get-todo', function($user, $todo) {
+            dd($todo);
+            return $user->id === $todo->user_id;
+        });
     }
 }

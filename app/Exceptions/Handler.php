@@ -52,6 +52,8 @@ class Handler extends ExceptionHandler
             return response()->json(['code' => 404, 'error' => 'path not found.'], 404);
         } else if ($e instanceof ValidationException) {
             return response()->json(['code' => 400, 'error' => $e->validator->messages()], 400);
+        } else if ($e instanceof MsgException) {
+            return response()->json(['code' => $e->getCode(), 'error' => $e->getMessage()], $e->getCode());
         }
         return parent::render($request, $e);
     }
