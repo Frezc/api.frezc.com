@@ -2,6 +2,7 @@
 use App\EmailVerification;
 use App\User;
 use App\Exceptions\MsgException;
+use Illuminate\Validation\ValidationException;
 
 function clearVerification($email) {
 	EmailVerification::where('email', $email)->delete();
@@ -27,4 +28,20 @@ function validateUser($token, $column = 'todo_app_token') {
 	}
 
 	throw new MsgException("Token not be provided", 400);
+}
+
+function validateJson($json, $rule) {
+	$arr = json_decode($json, true);
+
+	if (!is_array($arr)) {
+		return false;
+	}
+	
+	$v = Validator::make($arr, $rule);
+
+	if ($v->fails()) {
+		return false;
+	}
+
+	return true;
 }

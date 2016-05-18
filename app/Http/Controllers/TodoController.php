@@ -27,20 +27,22 @@ class TodoController extends Controller
     	$token = $request->input('token');
     	$user = validateUser($token);
 
-    	$request->contents = json_decode($request->contents, true);
+        
+
     	$this->validate($request, [
     		'title' => 'max:30',
     		'start_at' => 'integer',
     		'urgent_at' => 'integer',
     		'deadline' => 'integer',
     		'priority' => 'integer|between:1,9',
-    		'location' => 'max:255',
-    		'contents' => 'json',
-    		'contents.*.content' => 'required|string|max:255',
-    		'contents.*.status' => 'required|in:0,1'
+    		'location' => 'max:255'
     	]);
 
-    	$contents = $request->input('contents');
+        $contents = $request->input('contents');
+
+        if ($contents) {
+            $this->validateContents($contents);
+        }
 
     	$todo = Todo::findOrFail($id);
 
@@ -50,8 +52,10 @@ class TodoController extends Controller
 
     	$todo->update($request->except(['contents']));
 
-    	$todo->contents = $this->validateContents($contents);
-    	$todo->save();
+        if ($contents) {
+            $todo->contents = $this->limitContents($contents);
+            $todo->save();
+        }
 
     	return response()->json($todo);
     }
@@ -66,13 +70,11 @@ class TodoController extends Controller
     		'urgent_at' => 'integer',
     		'deadline' => 'integer',
     		'priority' => 'integer|between:1,9',
-    		'location' => 'max:255',
-    		'contents' => 'json',
-    		'contents.*.content' => 'required|max:255',
-    		'contents.*.status' => 'required|in:0,1'
+    		'location' => 'max:255'
     	]);
 
     	$contents = $request->input('contents', '[]');
+        $this->validateContents($contents);
 
     	$count = Todo::where('user_id', $user->id)->where('status', 0)->count();
     	if ($count >= 1000) {
@@ -82,7 +84,7 @@ class TodoController extends Controller
     	$todo = Todo::create($request->except('contents'));
 
     	$todo->user_id = $user->id;
-    	$todo->contents = $this->validateContents($contents);
+    	$todo->contents = $this->limitContents($contents);
     	$todo->save();
 
     	return response()->json($todo);
@@ -138,7 +140,18 @@ class TodoController extends Controller
         return response()->json($todo);
     }
 
-    function validateContents($contents) {
+    function limitContents($contents) {
     	return json_encode(array_slice(json_decode($contents), 0, 20));
+    }
+
+    function validateContents($contents) {
+        $result = validateJson($contents, [
+            '*.content' => 'required|string|max:255',
+            '*.status' => 'required|in:0,1'
+        ]);
+
+        if (!$result) {
+            throw new MsgException('Contents must be valid array of json with content and status.', 400);
+        }
     }
 }

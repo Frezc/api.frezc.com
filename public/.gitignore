@@ -1,0 +1,7 @@
+# ===== #
+# UPUPW #
+# ===== #
+ErrorFiles/
+.uini
+u.php
+*.conf
