@@ -29,7 +29,7 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     // protected $hidden = ['password'];
-    protected $visible = ['id', 'nickname', 'email'];
+    protected $visible = ['id', 'nickname', 'email', 'created_at'];
 
     protected $guarded = ['id'];
 }

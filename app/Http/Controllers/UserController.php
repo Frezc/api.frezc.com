@@ -11,6 +11,12 @@ use App\Todo;
 
 class UserController extends Controller
 {
+
+    public function show($id) {
+        $user = User::findOrFail($id);
+        return response()->json($user);
+    }
+
     public function register(Request $request) {
         $this->validate($request, [
             'email' => 'required|email|unique:users,email',

@@ -33,7 +33,8 @@ Route::group(['middleware' => ['api']], function($api) {
 		Route::get('fetchAnimelist', 'CrawlController@fetchAnimelist');
 	});
 
-	
+	// 测试用
+	Route::get('user/{id}', 'UserController@show')->where('id', '[0-9]+');
 
 	// TodoLite
 	Route::post('auth_todolite', 'AuthenticateController@auth_todolite');
