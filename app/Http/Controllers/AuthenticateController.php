@@ -51,4 +51,13 @@ class AuthenticateController extends Controller
 
         return response()->json(['error' => 'authenticate failed.'], 401);
     }
+
+    public function refresh_todolite(Request $request) {
+        $token = $request->input('token');
+        $user = validateUser($token);
+
+        $user->todo_app_token = generateToken($user->email);
+        $user->save();
+        return response()->json(['user' => $user, 'token' => $user->todo_app_token]);
+    }
 }

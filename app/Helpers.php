@@ -15,15 +15,18 @@ function generateToken($uniqueStr) {
 
 function validateUser($token, $column = 'todo_app_token') {
 	if ($token) {
-		$users = User::where($column, $token)->get();
+		$userBuilder = User::where($column, $token);
 
-		$n_users = count($users);
+		$n_users = $userBuilder->count();
 		if ($n_users == 1) {
-			return $users[0];
+			return $userBuilder->first();
 		} elseif ($n_users == 0) {
 			throw new MsgException("Toke invalid", 401);
-		} else {
-			throw new MsgException("Token generation error", 500);
+		} elseif ($n_users > 1) {
+			$userBuilder->update([
+				$column => null
+			]);
+			throw new MsgException("Token generation error, please re-auth", 500);
 		}
 	}
 
