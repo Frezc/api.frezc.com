@@ -48,3 +48,7 @@ function validateJson($json, $rule) {
 
 	return true;
 }
+
+function generateAvatarUrl($email, $size = 120) {
+	return 'https://cdn.v2ex.co/gravatar/'.md5(strtolower(trim($email))).'?d=retro&r=pg&s='.$size;
+}

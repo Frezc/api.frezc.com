@@ -46,6 +46,7 @@ class AuthenticateController extends Controller
         if ($userWithToken) {
             $userWithToken['user']->todo_app_token = $userWithToken['token'];
             $userWithToken['user']->save();
+            $userWithToken['user']->avatar = generateAvatarUrl($userWithToken['user']->email);
             return response()->json($userWithToken);
         }
 
@@ -58,6 +59,7 @@ class AuthenticateController extends Controller
 
         $user->todo_app_token = generateToken($user->email);
         $user->save();
+        $user->avatar = generateAvatarUrl($user->email);
         return response()->json(['user' => $user, 'token' => $user->todo_app_token]);
     }
 }

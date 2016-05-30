@@ -14,6 +14,7 @@ class UserController extends Controller
 
     public function show($id) {
         $user = User::findOrFail($id);
+        $user->avatar = generateAvatarUrl($user->email);
         return response()->json($user);
     }
 
