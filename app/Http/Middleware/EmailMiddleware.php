@@ -18,12 +18,13 @@ class EmailMiddleware
     public function handle($request, Closure $next)
     {
         $v = Validator::make($request->all(), [
-            'email' => 'required|email|exists:email_verifications,email',
+            // 'email' => 'required|email|exists:email_verifications,email',
+            'email' => 'required|email',
             'code' => 'required|string'
         ]);
 
         if ($v->fails()){
-            return response()->json($v->errors(), 400);
+            return response()->json(['code' => 400, 'error' => $v->errors()], 400);
         }
 
         $email = $request->input('email');
@@ -32,11 +33,11 @@ class EmailMiddleware
         $veri = EmailVerification::where('email', $email)->first();
 
         if ($veri == null || $veri->active != 1 || $veri->code != $code){
-            return response()->json(['error' => 'wrong code'], 430);
+            return response()->json(['code' => 430, 'error' => 'wrong code'], 430);
         }
 
         if (abs(time() - strtotime($veri->send_at)) > 3600) {
-            return response()->json(['error' => 'time exceed'], 431);
+            return response()->json(['code' => 431, 'error' => 'time exceed'], 431);
         }
 
         $response = $next($request);
