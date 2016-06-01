@@ -38,7 +38,7 @@ class EmailController extends Controller
 		Mail::send('emails.verification',
 		  ['token' => $token, 'avalible_before' => $avalible_before],
 		  function ($message) use($email) {
-		    $message->to($email, 'dear')->subject('邮箱验证');
+		    $message->to($email, 'dear')->subject('TodoLite Email verification');
 		});
 
 		// 将发送的验证码和过期时间保存到email_verifications表中

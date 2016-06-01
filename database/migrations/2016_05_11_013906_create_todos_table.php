@@ -21,17 +21,17 @@ class CreateTodosTable extends Migration
             // 类型
             $table->string('type')->default('default');
             // 为了直接保存为时间戳
-            $table->integer('start_at')->unsigned();
+            $table->timestamp('start_at')->nullable();
             // 预警时间
-            $table->integer('urgent_at')->unsigned()->nullable();
+            $table->timestamp('urgent_at')->nullable();
             // 预计的期限
-            $table->integer('deadline')->unsigned()->nullable();
+            $table->timestamp('deadline')->nullable();
             // 优先级， [1, 9]， 默认5
             $table->tinyInteger('priority')->default(5);
             // 地点
             $table->string('location')->nullable();
             // 对应status 0：null，1：完成时间，2：搁置时间，3：放弃时间
-            $table->integer('end_at')->unsigned()->nullable();
+            $table->timestamp('end_at')->nullable();
 
             $table->text('contents');
 
