@@ -76,10 +76,7 @@ class TodoController extends Controller
     	$contents = $request->input('contents', '[]');
         $this->validateContents($contents);
 
-    	$count = Todo::where('user_id', $user->id)->where('status', 0)->count();
-    	if ($count >= 1000) {
-    		throw new MsgException("Too many todos, please complete them before add new one !!!", 499);
-    	}
+        $this->checkNotExceed($user->id);
 
     	$todo = Todo::create($request->except('contents'));
 
@@ -95,17 +92,16 @@ class TodoController extends Controller
     	$user = validateUser($token);
 
     	$this->validate($request, [
-    		'type' => 'string|in:complete,abandon'
+    		'status' => 'string|in:complete,abandon'
     	]);
 
-    	$type = $request->input('type', 'complete');
+    	$status = $request->input('status', 'complete');
 
     	$todo = Todo::findOrFail($id);
-    	if ($todo->status != 0) {
+    	if ($todo->status != 'todo') {
     		throw new MsgException("Todo can only to be completed when status is to do.", 403);
     	}
 
-    	$status = $type === 'abandon' ? 3 : 1;
     	$todo->status = $status;
     	$todo->end_at = time();
     	$todo->save();
@@ -118,20 +114,22 @@ class TodoController extends Controller
     	$user = validateUser($token);
 
         $this->validate($request, [
-            'type' => 'string|in:todo,layside'
+            'status' => 'string|in:todo,layside'
         ]);
-        $type = $request->input('type', 'layside');
+        $status = $request->input('status', 'layside');
 
         $todo = Todo::findOrFail($id);
-        if ($todo->status != 0 && $todo->status != 2) {
-            throw new MsgException("Todo can only to be changed between todo and layside.", 403);
+        if ($todo->status != 'todo' && $todo->status != 'layside') {
+            throw new MsgException("Todo can only to be changed between to do and lay side.", 403);
         }
 
-        if ($type === 'layside') {
-            $status = 2;
+        if ($todo->status == $status) {
+            throw new MsgException("You cannot change status to own status.", 400);
+        }
+
+        if ($status === 'layside') {
             $todo->end_at = time();
         } else {
-            $status = 0;
             $todo->end_at = null;
         }
         $todo->status = $status;
@@ -152,6 +150,13 @@ class TodoController extends Controller
 
         if (!$result) {
             throw new MsgException('Contents must be valid array of json with content and status.', 400);
+        }
+    }
+
+    function checkNotExceed($userId) {
+        $count = Todo::where('user_id', $userId)->where('status', 'todo')->count();
+        if ($count >= 1000) {
+            throw new MsgException("Too many todos, please complete them before add new one !!!", 499);
         }
     }
 }

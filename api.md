@@ -86,7 +86,7 @@ response: (todo){
 	end_at,
 	contents: [{
 		content: text,
-		status: number
+		status: string
 	}]
 	created_at,
 	updated_at
@@ -118,10 +118,10 @@ create
 [get]
 request: {
 	token,
-	status: '0,1,2,3', // empty as all
+	status: 'todo,complete,layside,abandon', // empty as all
 	types: 'default,work' // list of types
 	orderBy: 'updated_at', // updated_at as default, start_at, priority, end_at(while complete or abandon)
-	direction: 'asc', // asc or desc
+	direction: 'desc', // asc or desc
 	offset: number, // 0 as default
 	limit: number,   // 1000 as default
 	keyword: string, // search in title and location
@@ -136,7 +136,7 @@ response: {
 [post]
 request: {
 	token,
-	type: 'complete' or 'abandon'
+	status: 'complete' or 'abandon'
 }
 
 response: todo
@@ -145,7 +145,7 @@ response: todo
 [post]
 request: {
 	token,
-	type: 'todo' or 'layside'
+	status: 'todo' or 'layside'
 }
 
 response: todo

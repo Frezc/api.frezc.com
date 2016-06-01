@@ -16,8 +16,8 @@ class CreateTodosTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('title', 30);
-            // 状态 0: 未开始或正在进行中，1: 完成，2: 搁置，3: 放弃
-            $table->tinyInteger('status')->default(0);
+            // change!: 'todo': 未开始或正在进行中, 'complete': 完成, 'layside': 搁置, 'abandon': 放弃
+            $table->string('status', 16)->default('todo');
             // 类型
             $table->string('type')->default('default');
             // 为了直接保存为时间戳
