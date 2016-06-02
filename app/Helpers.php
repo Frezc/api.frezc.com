@@ -13,7 +13,7 @@ function generateToken($uniqueStr) {
     return str_random(20).sha1($uniqueStr.time()).str_random(20);
 }
 
-function validateUser($token, $column = 'todo_app_token') {
+function validateUser($token, $column = 'todolite_android') {
 	if ($token) {
 		$userBuilder = User::where($column, $token);
 

@@ -17,11 +17,11 @@ class CreateUsersTable extends Migration
             $table->string('nickname', 32);
             $table->string('email')->unique();
             $table->string('password', 60);
-            $table->string('todo_app_token')->nullable();
+            $table->string('todolite_android')->nullable();
             $table->timestamps();
 
             $table->index('nickname');
-            $table->index('todo_app_token');
+            $table->index('todolite_android');
         });
     }
 
