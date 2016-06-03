@@ -39,6 +39,7 @@ Route::group(['middleware' => ['api']], function($api) {
 	// general
 	Route::post('auth', 'AuthenticateController@authenticate');
 	Route::get('refresh', 'AuthenticateController@refresh');
+	Route::get('unauth', 'AuthenticateController@unauth');
 
 	// TodoLite
 	Route::get('todolist', 'UserController@todolist')->where('id', '[0-9]+');

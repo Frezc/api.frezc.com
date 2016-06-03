@@ -64,4 +64,19 @@ class AuthenticateController extends Controller
         $user->avatar = generateAvatarUrl($user->email);
         return response()->json(['user' => $user, 'token' => $token]);
     }
+
+    public function unauth(Request $request) {
+        $this->validate($request, [
+            'token' => 'required',
+            'app' => 'required|in:todolite_android'
+        ]);
+
+        $token = $request->input('token');
+        $app = $request->input('app');
+
+        $user = validateUser($token, $app);
+        $user->{$app} = null;
+        $user->save();
+        return 'success';
+    }
 }
