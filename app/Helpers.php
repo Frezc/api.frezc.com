@@ -30,7 +30,7 @@ function validateUser($token, $column = 'todolite_android') {
 		}
 	}
 
-	throw new MsgException("Token not be provided", 400);
+	throw new MsgException("Token not be provided", 401);
 }
 
 function validateJson($json, $rule) {
