@@ -27,16 +27,16 @@ class TodoController extends Controller
     	$token = $request->input('token');
     	$user = validateUser($token);
 
-        
+        $rule = [
+            'title' => 'max:30',
+            'start_at' => 'integer',
+            'urgent_at' => 'integer',
+            'deadline' => 'integer',
+            'priority' => 'integer|between:1,9',
+            'location' => 'max:255'
+        ];
 
-    	$this->validate($request, [
-    		'title' => 'max:30',
-    		'start_at' => 'integer',
-    		'urgent_at' => 'integer',
-    		'deadline' => 'integer',
-    		'priority' => 'integer|between:1,9',
-    		'location' => 'max:255'
-    	]);
+    	$this->validate($request, $rule);
 
         $contents = $request->input('contents');
 
@@ -51,11 +51,20 @@ class TodoController extends Controller
     	}
 
     	$todo->update($request->except(['contents']));
+        // foreach ($rule as $key => $value) {
+        //     if ($request->has($key)) {
+        //         $todo->{$key} = $request->input($key);
+        //     }
+        // }
 
         if ($contents) {
             $todo->contents = $this->limitContents($contents);
             $todo->save();
         }
+
+        // 直接返回上面的$todo的话，其中参数为数字的值会变为字符串（因为请求中的参数都是字符串）
+        // 重新find一遍可以得到转换后的结果
+        $todo = Todo::find($todo->id);
 
     	return response()->json($todo);
     }
@@ -83,6 +92,9 @@ class TodoController extends Controller
     	$todo->user_id = $user->id;
     	$todo->contents = $this->limitContents($contents);
     	$todo->save();
+
+        // 同上
+        $todo = Todo::find($todo->id);
 
     	return response()->json($todo);
     }
