@@ -132,6 +132,24 @@ response: {
 	todolist: [todo]
 }
 
+#####/history
+[get]
+request: {
+	token,
+	complete: 0 or 1,   // show complete, 1 as default
+	abandon: 0 or 1,    // same as complete
+	types: 'default,work' // list of types
+	offset: number, // 0 as default
+	limit: number,   // 50 as default
+	keyword: string, // search in title and location
+	year: number     // [2016, now]
+}
+
+response: {
+	all: number of whole items,
+	todolist: [todo]
+}
+
 #####/todos/{id}/finish
 [post]
 request: {

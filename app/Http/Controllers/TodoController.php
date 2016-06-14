@@ -166,7 +166,7 @@ class TodoController extends Controller
     }
 
     function checkNotExceed($userId) {
-        $count = Todo::where('user_id', $userId)->where('status', 'todo')->count();
+        $count = Todo::where('user_id', $userId)->where('status', 'todo')->orWhere('status', 'layside')->count();
         if ($count >= 1000) {
             throw new MsgException("Too many todos, please complete them before add new one !!!", 499);
         }
