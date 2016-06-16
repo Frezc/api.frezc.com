@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,24 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call(UserTableSeeder::class);
-        // DB::table('users')->insert([
-        //     'nickname' => str_random(10),
-        //     'email' => str_random(10).'@gmail.com',
-        //     'password' => Hash::make('secret'),
-        // ]);
-
-        // DB::table('users')->update([
-        //     'password' => Hash::make('secret')
-        // ]);
-
-        // DB::table('users')->update([
-        //     'avatar' => 'http://static.frezc.com/static/avatars/default'
-        // ]);
-
-        DB::table('resumes')->update([
-            'photo' => 'http://static.frezc.com/static/resume_photos/default'
+        User::create([
+            'nickname' => 'frezc',
+            'email' => '504021398@qq.com',
+            'password' => Hash::make('secret')
         ]);
+
+        User::create([
+            'nickname' => 'frezc',
+            'email' => 'frezcw@gmail.com',
+            'password' => Hash::make('secret')
+        ]);
+
+        factory(App\Todo::class, 1000)->create();
 
         Model::reguard();
     }
