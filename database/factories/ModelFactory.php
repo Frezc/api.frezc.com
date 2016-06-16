@@ -26,6 +26,9 @@ $factory->define(App\Todo::class, function (Faker\Generator $faker) use($statusA
         'priority' => rand(1, 9),
         'location' => $faker->address,
         'end_at' => $end ? time() : 0,
-        'contents' => '[{"content":"'.$faker->text(255).'","status":1}]'
+        'contents' => json_encode([[
+        	'content' => $faker->text(255),
+        	'status' => 1
+        ]])
     ];
 });
