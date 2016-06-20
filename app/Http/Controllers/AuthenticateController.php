@@ -38,8 +38,11 @@ class AuthenticateController extends Controller
             $user->{$app} = $token;
             $user->save();
             $user->avatar = generateAvatarUrl($email);
+            if ($app == 'todolite_android') {
+                $user = userDataTodolite($user);
+            }
             return response()->json([
-                'user' => $user, 
+                'user' => $user,
                 'token' => $token
             ]);
         }

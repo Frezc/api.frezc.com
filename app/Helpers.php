@@ -1,6 +1,7 @@
 <?php
 use App\EmailVerification;
 use App\User;
+use App\Todo;
 use App\Exceptions\MsgException;
 use Illuminate\Validation\ValidationException;
 
@@ -51,4 +52,13 @@ function validateJson($json, $rule) {
 
 function generateAvatarUrl($email, $size = 120) {
 	return 'https://cdn.v2ex.co/gravatar/'.md5(strtolower(trim($email))).'?d=retro&r=pg&s='.$size;
+}
+
+function userDataTodolite(User $user) {
+	$builder = Todo::where('user_id', $user->id);
+	$user->todo = $builder->where('status', 'todo')->count();
+	$user->layside = $builder->where('status', 'layside')->count();
+	$user->complete = $builder->where('status', 'complete')->count();
+	$user->abandon = $builder->where('status', 'abandon')->count();
+	return $user;
 }

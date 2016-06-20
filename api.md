@@ -14,6 +14,30 @@ ____
 ____
 ####API
 
+#####/auth
+[post]
+Request:
+- email
+- password
+- app: 'todolite_android'
+
+Response:
+{
+	user: {
+		id,
+		nickname,
+		email,
+		created_at,
+		/** only in todolite
+		todo: number,
+		layside: number,
+		complete: number,
+		abandon: number,
+		*/
+	},
+	token
+}
+
 #####/bgm_info/{id}
 [get]
 Request:
@@ -167,4 +191,3 @@ request: {
 }
 
 response: todo
-
