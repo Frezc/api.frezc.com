@@ -12,9 +12,17 @@ use App\Todo;
 class UserController extends Controller
 {
 
-    public function show($id) {
+    public function show($id, Request $request) {
+        $this->validate($request, [
+            'app' => 'required|in:todolite_android'
+        ]);
+
         $user = User::findOrFail($id);
+        $app = $request->input('app');
         $user->avatar = generateAvatarUrl($user->email);
+        if ($app == 'todolite_android') {
+            $user = userDataTodolite($user);
+        }
         return response()->json($user);
     }
 
