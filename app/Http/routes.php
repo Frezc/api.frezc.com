@@ -18,7 +18,10 @@ Route::get('/', function () {
 
 // 发送邮件
 Route::get('sendVerifyEmail', 'EmailController@sendVerifyEmail')->middleware(['throttle:3']);
-Route::post('register', 'UserController@register')->middleware(['throttle:10', 'email']);
+Route::group(['middleware' => ['throttle:10', 'email']], function($api) {
+	Route::post('register', 'UserController@register');
+	Route::post('resetPassword', 'AuthenticateController@resetPassword');
+});
 
 Route::group(['middleware' => ['api']], function($api) {
 	// statistics.frezc.com
@@ -33,8 +36,9 @@ Route::group(['middleware' => ['api']], function($api) {
 		Route::get('fetchAnimelist', 'CrawlController@fetchAnimelist');
 	});
 
-	// 测试用
 	Route::get('user/{id}', 'UserController@show')->where('id', '[0-9]+');
+	Route::post('user', 'UserController@update');
+	Route::post('changePassword', 'UserController@changePassword');
 
 	// general
 	Route::post('auth', 'AuthenticateController@authenticate');

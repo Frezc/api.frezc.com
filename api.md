@@ -14,12 +14,15 @@ ____
 ____
 ####API
 
+[global]
+request:
+- app: 'todolite_android' (default)
+
 #####/auth
 [post]
 Request:
 - email
 - password
-- app: 'todolite_android'
 
 Response:
 {
@@ -191,3 +194,41 @@ request: {
 }
 
 response: todo
+
+#####/user/{id}
+[get]
+request: {
+	app: 'todolite_android'
+}
+
+response: user
+
+#####/user
+[post]
+request: {
+	token,
+	app,
+	nickname: 1 ~ 32
+}
+
+response: user (after updated)
+
+#####/changePassword
+[post]
+request: {
+	token,
+	oldPassword,
+	newPassword
+}
+
+response: string // if succeed, you should re-auth on all app
+
+#####/resetPassword
+[post]
+request: {
+	email,
+	code,   // call /sendVerifyEmail to get code
+	password
+}
+
+response: string // if succeed, you should re-auth on all app

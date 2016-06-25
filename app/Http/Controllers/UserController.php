@@ -8,21 +8,34 @@ use App\Http\Requests;
 use App\User;
 use Hash;
 use App\Todo;
+use App\Exceptions\MsgException;
 
 class UserController extends Controller
 {
 
     public function show($id, Request $request) {
         $this->validate($request, [
-            'app' => 'required|in:todolite_android'
+            'app' => $this->appRule
         ]);
 
         $user = User::findOrFail($id);
         $app = $request->input('app');
-        $user->avatar = generateAvatarUrl($user->email);
-        if ($app == 'todolite_android') {
-            $user = userDataTodolite($user);
-        }
+        $user = bindData($user, $app);
+        return response()->json($user);
+    }
+
+    public function update(Request $request) {
+        $token = $request->input('token');
+        $user = validateUser($token);
+        $this->validate($request, [
+            'app' => $this->appRule,
+            'nickname' => 'required|between:1,32'
+        ]);
+
+        $user->nickname = $request->input('nickname');
+        $user->save();
+        $app = $request->input('app');
+        $user = bindData($user, $app);
         return response()->json($user);
     }
 
@@ -37,6 +50,28 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->nickname = $request->input('nickname');
         $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        return 'success';
+    }
+
+    public function changePassword(Request $request) {
+        $token = $request->input('token');
+        $user = validateUser($token);
+        $this->validate($request, [
+            'oldPassword' => 'required',
+            'newPassword' => 'required|between:6,32'
+        ]);
+
+        $oldPassword = $request->input('oldPassword');
+        $newPassword = $request->input('newPassword');
+        if (!Hash::check($oldPassword, $user->password)) {
+            throw new MsgException("Your old password is wrong.", 403);
+        }
+        $user->password = Hash::make($newPassword);
+        foreach ($this->apps as $app) {
+            $user->{$app} = null;
+        }
         $user->save();
 
         return 'success';

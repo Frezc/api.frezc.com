@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Auth;
+use App\User;
+use App\Exceptions\MsgException;
+use Hash;
 
 class AuthenticateController extends Controller
 {
@@ -13,7 +16,7 @@ class AuthenticateController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|between:6,32',
-            'app' => 'required|in:todolite_android'
+            'app' => $this->appRule
         ]);
 
         $email = $request->input('email');
@@ -37,10 +40,7 @@ class AuthenticateController extends Controller
             $token = generateToken($email.$app);
             $user->{$app} = $token;
             $user->save();
-            $user->avatar = generateAvatarUrl($email);
-            if ($app == 'todolite_android') {
-                $user = userDataTodolite($user);
-            }
+            $user = bindData($user, $app);
             return response()->json([
                 'user' => $user,
                 'token' => $token
@@ -53,7 +53,7 @@ class AuthenticateController extends Controller
     public function refresh(Request $request) {
         $this->validate($request, [
             'token' => 'required',
-            'app' => 'required|in:todolite_android'
+            'app' => $this->appRule
         ]);
 
         $token = $request->input('token');
@@ -64,14 +64,14 @@ class AuthenticateController extends Controller
         $token = generateToken($user->email.$app);
         $user->{$app} = $token;
         $user->save();
-        $user->avatar = generateAvatarUrl($user->email);
+        $user = bindData($user, $app);
         return response()->json(['user' => $user, 'token' => $token]);
     }
 
     public function unauth(Request $request) {
         $this->validate($request, [
             'token' => 'required',
-            'app' => 'required|in:todolite_android'
+            'app' => $this->appRule
         ]);
 
         $token = $request->input('token');
@@ -79,6 +79,27 @@ class AuthenticateController extends Controller
 
         $user = validateUser($token, $app);
         $user->{$app} = null;
+        $user->save();
+        return 'success';
+    }
+
+    public function resetPassword(Request $request) {
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required|between:6,32'
+        ]);
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            throw new MsgException("This account is not exist.", 400);
+        }
+
+        $user->password = Hash::make($password);
+        foreach ($this->apps as $app) {
+            $user->{$app} = null;
+        }
         $user->save();
         return 'success';
     }

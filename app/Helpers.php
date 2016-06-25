@@ -62,3 +62,11 @@ function userDataTodolite(User $user) {
 	$user->abandon = $builder->where('status', 'abandon')->count();
 	return $user;
 }
+
+function bindData(User $user, $app =  '') {
+	if ($app == 'todolite_android') {
+		$user = userDataTodolite($user);
+	}
+	$user->avatar = generateAvatarUrl($user->email);
+	return $user;
+}

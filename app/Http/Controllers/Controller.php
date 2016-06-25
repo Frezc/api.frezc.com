@@ -10,4 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public $appRule = 'required|in:todolite_android';
+    public $apps = ['todolite_android'];
 }
