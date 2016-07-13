@@ -12,11 +12,13 @@ ____
 }
 
 ____
-####API
+###API
 
 [global]
 request:
 - app: 'todolite_android' (default)
+
+#### general
 
 #####/auth
 [post]
@@ -40,6 +42,46 @@ Response:
 	},
 	token
 }
+
+#####/user/{id}
+[get]
+request: {
+	app: 'todolite_android'
+}
+
+response: user
+
+#####/user
+[post]
+request: {
+	token,
+	app,
+	nickname: 1 ~ 32
+}
+
+response: user (after updated)
+
+#####/changePassword
+[post]
+request: {
+	token,
+	oldPassword,
+	newPassword
+}
+
+response: string // if succeed, you should re-auth on all app
+
+#####/resetPassword
+[post]
+request: {
+	email,
+	code,   // call /sendVerifyEmail to get code
+	password
+}
+
+response: string // if succeed, you should re-auth on all app
+
+#### http://statistics.frezc.com/anime-rank.html
 
 #####/bgm_info/{id}
 [get]
@@ -92,6 +134,8 @@ Response:
 #####/fetchAnimelist
 [get]
 response同http://api.bgm.tv/calendar
+
+#### https://github.com/Frezc/TodoLite
 
 #####/todos/{id}
 [get]
@@ -195,40 +239,72 @@ request: {
 
 response: todo
 
-#####/user/{id}
+#### nimingban
+
+#####/nimingban/id
 [get]
 request: {
-	app: 'todolite_android'
+	oldId    // can be null, server will check if this id is valid
 }
 
-response: user
+response: {
+	id
+}
 
-#####/user
+#####/nimingban/branches
+[get]
+request: {
+	section: '游戏', // required
+	offset: 0,
+	limit: 10,
+	withReplies: 3   // default
+}
+
+response: {
+	all: 77,
+	branches: [{
+		...branch  // with 3 replies
+	}]
+}
+
+#####/nimingban/branches
 [post]
 request: {
-	token,
-	app,
-	nickname: 1 ~ 32
+	section: '游戏',
+	authorId: fd33sfe3e,
+	authorName: '无名氏',
+	title: '',
+	content: ''
 }
 
-response: user (after updated)
+response: {
+	...   // see /nimingban/branches/{id}
+}
 
-#####/changePassword
-[post]
+#####/nimingban/branches/{id}
+[get]
 request: {
-	token,
-	oldPassword,
-	newPassword
+	
 }
 
-response: string // if succeed, you should re-auth on all app
-
-#####/resetPassword
-[post]
-request: {
-	email,
-	code,   // call /sendVerifyEmail to get code
-	password
+response: {
+	id: 1,
+	authorId: fd33sfe3e,
+	authorName: '无名氏',
+	created_at,
+	updated_at,
+	title: '',  [0, 32]
+	content: '',
+	replies: [{
+		id: 1,
+		replyTo: 1,  // reply id
+		branchId: 1,
+		authorId: ffe21da2,
+		authorName: '无名氏',
+		created_at,
+		// updated_at,
+		content: ''
+	}]
 }
 
-response: string // if succeed, you should re-auth on all app
+
