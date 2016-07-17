@@ -284,20 +284,23 @@ response: {
 #####/nimingban/branches/{id}
 [get]
 request: {
-	
+	withReplies: 20
 }
 
 response: {
 	id: 1,
-	authorId: fd33sfe3e,
-	authorName: '无名氏',
+	authorId: 'fd33sfe3e',
+	authorName: '无名氏',   // [0, 16]
 	created_at,
 	updated_at,
-	title: '',  [0, 32]
+	title: '',       // [0, 32]
 	content: '',
+	repliesNum: 10,  
 	replies: [{
 		id: 1,
-		replyTo: 1,  // reply id
+		floor: 39,   // 楼层
+		replyToId: 1,  // reply id
+		replyToFloor: 1, 
 		branchId: 1,
 		authorId: ffe21da2,
 		authorName: '无名氏',
@@ -307,4 +310,29 @@ response: {
 	}]
 }
 
+#####/nimingban/branches/{id}/replies
+[get]
+request: {
+	offset: 0,
+	limit: 20
+}
 
+response: {
+	all: 10,
+	replies: [{
+		... see above
+	}]
+}
+
+#####/nimingban/branches/{id}/replies
+[post]
+request: {
+	authorId: 'fd33sfe3e',
+	authorName: '无名氏',
+	content: '',
+	replyToFloor: 2,   // 回复的楼数
+}
+
+response: {
+	...see above
+}

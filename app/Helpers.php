@@ -70,3 +70,9 @@ function bindData(User $user, $app =  '') {
 	$user->avatar = generateAvatarUrl($user->email);
 	return $user;
 }
+
+// from integer to string
+function generateId($id) {
+	$now = time();
+	return substr(md5("{$id} {$now}"), 8, 8);
+}

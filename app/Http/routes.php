@@ -53,5 +53,15 @@ Route::group(['middleware' => ['api']], function($api) {
 	Route::post('todos', 'TodoController@store');
 	Route::post('todos/{id}/finish', 'TodoController@finish')->where('id', '[0-9]+');
 	Route::post('todos/{id}/layside', 'TodoController@layside')->where('id', '[0-9]+');
+
+	// nimingban
+	Route::group(['prefix' => 'nimingban'], function () {
+		Route::get('id', 'NimingbanController@id');
+		Route::get('branches', 'NimingbanController@getBranches');
+		Route::post('branches', 'NimingbanController@createBranches');
+		Route::get('branches/{id}', 'NimingbanController@branch')->where('id', '[0-9]+');
+		Route::get('branches/{id}/replies', 'NimingbanController@getReplies')->where('id', '[0-9]+');
+		Route::post('branches/{id}/replies', 'NimingbanController@createReply')->where('id', '[0-9]+');
+	});
 });
 
